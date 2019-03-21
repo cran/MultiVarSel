@@ -5,7 +5,8 @@
 \title{This function helps to choose the best whitening strategy among the following types of dependence
 modellings: AR1, ARMA, non parametric and without any whitening.}
 \usage{
-whitening_choice(residuals, typeDeps = "AR1", pAR = 1, qMA = 0)
+whitening_choice(residuals, typeDeps = "AR1", pAR = 1, qMA = 0,
+  threshold = 0.05)
 }
 \arguments{
 \item{residuals}{the residuals matrix obtained by fitting a linear model to each column of the response matrix as if they were independent}
@@ -15,6 +16,8 @@ whitening_choice(residuals, typeDeps = "AR1", pAR = 1, qMA = 0)
 \item{pAR}{numerical, only use if typeDep = "ARMA", the parameter p for the ARMA(p, q) process}
 
 \item{qMA}{numerical, only use if typeDep = "ARMA", the parameter q for the ARMA(p, q) process}
+
+\item{threshold}{significance level of the test}
 }
 \value{
 It provides a table giving the p-values for the different whitening tests applied to the residuals multiplied on the right
@@ -28,9 +31,9 @@ modellings: AR1, ARMA, non parametric and without any whitening.
 }
 \examples{
 data(copals_camera)
-Y=scale(Y[,1:100])
-X <- model.matrix( ~ group + 0)
-residuals=lm(as.matrix(Y)~X-1)$residuals
-whitening_choice(residuals,c("AR1","nonparam","ARMA","no_whitening"),
-pAR=1,qMA=1)
+Y <- scale(Y[, 1:100])
+X <- model.matrix(~ group + 0)
+residuals <- lm(as.matrix(Y) ~ X - 1)$residuals
+whitening_choice(residuals, c("AR1", "nonparam", "ARMA", "no_whitening"),
+  pAR = 1, qMA = 1 )
 }

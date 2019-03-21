@@ -23,8 +23,8 @@ This function provides an estimation of the inverse of the square root of the co
 }
 \examples{
 data(copals_camera)
-Y=scale(Y[,1:100])
-X <- model.matrix( ~ group + 0)
-residuals=lm(as.matrix(Y)~X-1)$residuals
+Y <- scale(Y[, 1:100])
+X <- model.matrix(~ group + 0)
+residuals <- lm(as.matrix(Y) ~ X - 1)$residuals
 whitening(residuals, "AR1")
 }

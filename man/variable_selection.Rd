@@ -6,27 +6,22 @@
 the estimation of their selection frequencies obtained by the stability
 selection approach.}
 \usage{
-variable_selection(X, group = NULL, Y, nb_replis = 1000, nb.cores = 4,
-  typeDep = "AR1", pAR = 1, qMA = 0, parallel = FALSE)
+variable_selection(Y, X, square_root_inv_hat_Sigma, nb_repli = 1000,
+  parallel = FALSE, nb.cores = 1)
 }
 \arguments{
-\item{X}{a matrix of covariables}
-
-\item{group}{if the model is an ANOVA, the group resulting from the categorical variable.}
-
 \item{Y}{a response matrix}
 
-\item{nb_replis}{numerical, number of replications in the stability selection}
+\item{X}{a matrix of covariables}
 
-\item{nb.cores}{numerical, number of cores used}
+\item{square_root_inv_hat_Sigma}{Estimation of the inverse of the square root of the covariance matrix
+of each row of the residuals matrix obtained by the whitening function.}
 
-\item{typeDep}{character in c("AR1", "ARMA", "nonparam") defining which type of dependence to use}
-
-\item{pAR}{numerical, only use if typeDep = "ARMA", the parameters p for the ARMA(p, q) process}
-
-\item{qMA}{numerical, only use if typeDep = "ARMA", the parameters q for the ARMA(p, q) process}
+\item{nb_repli}{numerical, number of replications in the stability selection}
 
 \item{parallel}{logical, if TRUE then a parallelized version of the code is used}
+
+\item{nb.cores}{numerical, number of cores used}
 }
 \value{
 A data frame containing the selection frequencies of the different variables obtained
@@ -40,7 +35,13 @@ selection approach.
 }
 \examples{
 data("copals_camera")
-Y <- scale(Y[,1:50])
-Frequencies <- variable_selection(Y = Y, group = group,
- nb_repli = 10, typeDep = 'AR1', pAR = 1, qMA = 0, nb.cores = 1, parallel = FALSE)
+Y <- scale(Y[, 1:50])
+X <- model.matrix(~ group + 0)
+residuals <- lm(as.matrix(Y) ~ X - 1)$residuals
+S12_inv <- whitening(residuals, "AR1", pAR = 1, qMA = 0)
+Frequencies <- variable_selection(
+  Y = Y, X = X,
+  square_root_inv_hat_Sigma = S12_inv,
+  nb_repli = 10, nb.cores = 1, parallel = FALSE
+)
 }
